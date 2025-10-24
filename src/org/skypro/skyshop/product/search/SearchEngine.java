@@ -10,7 +10,7 @@ public class SearchEngine {
 
 
     public SearchEngine(int initialCapacity){
-        this.searcables = new ArrayList<>(initialCapacity);
+        this.searhcables = new ArrayList<>(initialCapacity);
     }
 
     public static Map<String , Searchable> search(String query){

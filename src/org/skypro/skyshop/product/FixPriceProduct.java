@@ -12,7 +12,7 @@ public class FixPriceProduct extends Product {
         return fixPrice;
     }
 
-    public boolean isSpecial(){
+    public boolean isSpecial() {
         return true;
     }
 
@@ -22,7 +22,6 @@ public class FixPriceProduct extends Product {
                 "name='" + name + '\'' +
                 fixPrice;
     }
-
 
 
     @Override

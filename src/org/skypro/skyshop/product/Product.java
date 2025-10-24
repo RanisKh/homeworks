@@ -12,8 +12,8 @@ public abstract class Product implements Searchable {
         this.name = product;
     }
 
-    private void validateName(String name){
-        if (name == null || name.isBlank()){
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Название продукта не может быть null, пустой строкой или состоять только из пробелов");
         }
     }
@@ -28,7 +28,7 @@ public abstract class Product implements Searchable {
         return true;
     }
 
-    public String getSearchTerm(){
+    public String getSearchTerm() {
         return name;
     }
 

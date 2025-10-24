@@ -6,6 +6,7 @@ import org.skypro.skyshop.product.search.SearchEngine;
 import org.skypro.skyshop.product.search.Searchable;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class App {
@@ -48,12 +49,12 @@ public class App {
         productBasket.hasProduct("Треска");
         productBasket.hasProduct("Виноград");
 
-        List<Searchable> breadResults = SearchEngine.search("Хлеб");
-        printResult(breadResults);
+        Map<String, Searchable> breadResults = SearchEngine.search("Хлеб");
+        printResult((List<Searchable>) breadResults);
 
 
         productBasket.removeAllProductsByName("Баранина");
-        productBasket.removeProduct("Хлеб");
+        productBasket.removeProduct(bread);
         productBasket.clearBasket();
         productBasket.printProductBasket();
         List<Product> removedButter = productBasket.removeAllProductsByName("масло");

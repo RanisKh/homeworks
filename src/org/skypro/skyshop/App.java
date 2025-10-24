@@ -1,21 +1,38 @@
 package org.skypro.skyshop;
 
-import org.skypro.skyshop.product.DiscountedProduct;
-import org.skypro.skyshop.product.FixPriceProduct;
-import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.*;
 import org.skypro.skyshop.basket.ProductBasket;
-import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.product.search.SearchEngine;
+import org.skypro.skyshop.product.search.Searchable;
+
+import java.util.List;
+
 
 public class App {
     public static void main(String[] args) {
-        ProductBasket productBasket = new ProductBasket(5);
+        ProductBasket productBasket = new ProductBasket();
 
         Product butter = new FixPriceProduct("Масло");
         Product fish = new FixPriceProduct("Треска");
-        Product meat = new DiscountedProduct("Баранина", 700, 30 );
+        Product meat = new DiscountedProduct("Баранина", 700, 30);
         Product rise = new SimpleProduct("Рис", 100);
         Product bread = new SimpleProduct("Хлеб", 55);
         Product meat2 = new DiscountedProduct("Говядина", 500, 10);
+
+        Article article1 = new Article("Хлеб", "Хлеб российский");
+        Article article2 = new Article("Рис", "Отборный рис из Китая");
+
+        SearchEngine.add(bread);
+        SearchEngine.add(butter);
+        SearchEngine.add(meat);
+        SearchEngine.add(article1);
+        SearchEngine.add(article2);
+
+        System.out.println("Test SimpleProduct");
+        testSimpleProduct();
+
+        System.out.println("Test DiscountedProduct");
+        testDiscountedProduct();
 
         productBasket.addProduct(butter);
         productBasket.addProduct(fish);
@@ -24,13 +41,80 @@ public class App {
         productBasket.addProduct(bread);
         productBasket.addProduct(meat);
 
-        System.out.println("Корзина: ");
         productBasket.printProductBasket();
 
-        System.out.println("Есть ли рыба в корзине " + productBasket.hasProduct("", "Рыба"));
-        System.out.println("Есть ли баранина в корзине " + productBasket.hasProduct("", "Баранина"));
+        productBasket.getTotalPrice();
 
+        productBasket.hasProduct("Треска");
+        productBasket.hasProduct("Виноград");
+
+        List<Searchable> breadResults = SearchEngine.search("Хлеб");
+        printResult(breadResults);
+
+
+        productBasket.removeAllProductsByName("Баранина");
+        productBasket.removeProduct("Хлеб");
         productBasket.clearBasket();
         productBasket.printProductBasket();
+        List<Product> removedButter = productBasket.removeAllProductsByName("масло");
+        System.out.println("removed products:");
+        if (removedButter.isEmpty()) {
+            System.out.println("List is empty");
+        } else {
+            for (Product product : removedButter) {
+                System.out.println(" - " + product.getName() + ": " + product.getPrice() + "rub.");
+            }
+        }
+        List<Product> removePens = productBasket.removeAllProductsByName("");
+        System.out.println("Removed products: ");
+        if (removePens.isEmpty()) {
+            System.out.println("List is empty");
+        } else {
+            for (Product product : removePens) {
+                System.out.println(" - " + product.getName() + ": " + product.getPrice() + "rub.");
+            }
+        }
+
+    }
+
+    private static void printResult(List<Searchable> results) {
+        if (results.isEmpty()) {
+            System.out.println("Not found!");
+            return;
+        }
+
+        System.out.println("Found " + results.size() + "objects: ");
+        SearchEngine.getSearchables().forEach(item ->
+                System.out.println(item.getStringRepresentation()));
+    }
+
+    private static void testSimpleProduct() {
+        try {
+            SimpleProduct product1 = new SimpleProduct("Яблоки Голден", 0.0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR : " + e.getMessage());
+        }
+
+        try {
+            SimpleProduct product2 = new SimpleProduct(" ", 50.0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR : " + e.getMessage());
+        }
+    }
+
+    private static void testDiscountedProduct() {
+        try {
+            DiscountedProduct product3 = new DiscountedProduct("Апельсины", 500.0, -5.0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("ОШИБКА: " + e.getMessage());
+        }
+
+        try {
+            DiscountedProduct product4 = new DiscountedProduct("Бананы", 0.0, 10.0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("ОШИБКА: " + e.getMessage());
+
+        }
     }
 }
+

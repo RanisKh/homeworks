@@ -1,20 +1,32 @@
 package org.skypro.skyshop.product.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class SearchEngine {
-    private static List<Searchable> searchables;
+    private static Set<Searchable> searchables;
 
 
     public SearchEngine(int initialCapacity) {
-        this.searchables = new ArrayList<>(initialCapacity);
+        this.searchables = new HashSet<>(initialCapacity);
     }
 
-    public static Map<String, Searchable> search(String query) {
-        Map<String, Searchable> results = new TreeMap<>();
+    public static final Comparator<Searchable> LENGTH_THEN_NATURAL_COMPARATOR = new Comparator<Searchable>() {
+        @Override
+        public int compare(Searchable o1, Searchable o2) {
+            int lengthCompare = Integer.compare(
+                    o2.getName().length(),
+                    o1.getName().length()
+            );
+            if (lengthCompare != 0 ){
+                return lengthCompare;
+            }
+
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
+
+    public static Set<Searchable> search(String query) {
+        Set<Searchable> results = new TreeSet<>(LENGTH_THEN_NATURAL_COMPARATOR);
 
         if (query == null || query.trim().isEmpty()) {
             return results;
@@ -28,16 +40,17 @@ public class SearchEngine {
             String searchTerm = item.getSearchTerm();
 
             if (searchTerm != null && searchTerm.toLowerCase().contains(LowerQuery)) {
-                results.put(item.getName(), item);
+                results.add(item);
             }
         }
         return results;
     }
 
-    public static void add(Searchable item) {
+    public static boolean add(Searchable item) {
         if (item != null) {
-            searchables.add(item);
+           return searchables.add(item);
         }
+        return false;
     }
 
     public void addAll(List<Searchable> items) {
@@ -50,6 +63,14 @@ public class SearchEngine {
         }
     }
 
+    public boolean remove(Searchable item){
+        return searchables.remove(item);
+    }
+
+    public boolean contains(Searchable item){
+        return searchables.contains(item);
+    }
+
     public int getSearchableCount() {
         return searchables.size();
     }
@@ -59,6 +80,20 @@ public class SearchEngine {
     }
 
     public static List<Searchable> getSearchables() {
-        return new ArrayList<>(searchables);
+        List<Searchable> sortedList = new ArrayList<>(searchables);
+        sortedList.sort(LENGTH_THEN_NATURAL_COMPARATOR);
+        return sortedList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SearchEngine that = (SearchEngine) o;
+        return Objects.equals(searchables, that.searchables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(searchables);
     }
 }

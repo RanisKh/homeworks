@@ -7,6 +7,7 @@ import org.skypro.skyshop.product.search.Searchable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class App {
@@ -23,11 +24,11 @@ public class App {
         Article article1 = new Article("Хлеб", "Хлеб российский");
         Article article2 = new Article("Рис", "Отборный рис из Китая");
 
-        SearchEngine.add(bread);
-        SearchEngine.add(butter);
-        SearchEngine.add(meat);
-        SearchEngine.add(article1);
-        SearchEngine.add(article2);
+        SearchEngine.add(new SimpleProduct("Хлеб", 55));
+        SearchEngine.add(new FixPriceProduct("Треска"));
+        SearchEngine.add(new DiscountedProduct("Баранина", 700, 30));
+        SearchEngine.add(new SimpleProduct("Рис", 55));
+        SearchEngine.add(new FixPriceProduct("Масло"));
 
         System.out.println("Test SimpleProduct");
         testSimpleProduct();
@@ -49,7 +50,7 @@ public class App {
         productBasket.hasProduct("Треска");
         productBasket.hasProduct("Виноград");
 
-        Map<String, Searchable> breadResults = SearchEngine.search("Хлеб");
+        Set<Searchable> breadResults = SearchEngine.search("Хлеб");
         printResult((List<Searchable>) breadResults);
 
 
